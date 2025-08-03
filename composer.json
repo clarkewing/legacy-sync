@@ -1,0 +1,72 @@
+{
+    "name": "clarkewing/legacy-sync",
+    "description": "Lightweight Laravel package for bi-directional database syncing between a legacy and modern app.",
+    "keywords": [
+        "php",
+        "clarkewing",
+        "laravel",
+        "legacy",
+        "sync",
+        "database"
+    ],
+    "homepage": "https://github.com/clarkewing/legacy-sync",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hugo Clarke-Wing",
+            "email": "7689302+clarkewing@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "illuminate/console": "^8.0|^9.0|^10.0|^11.0|^12.0",
+        "illuminate/database": "^8.0|^9.0|^10.0|^11.0|^12.0",
+        "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.5",
+        "orchestra/testbench": "^6.0|^7.0|^8.0|^9.0|^10.0",
+        "pestphp/pest": "^v1.23.1|^2.34|^3.7",
+        "pestphp/pest-plugin-laravel": "^1.1|^2.3|^3.1",
+        "pestphp/pest-plugin-type-coverage": "^3.6",
+        "phpstan/phpstan": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "ClarkeWing\\LegacySync\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ClarkeWing\\LegacySync\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "lint": "pint -v --parallel",
+        "test:lint": "pint --test -v --parallel",
+        "test:types": "phpstan analyse --ansi --memory-limit=-1",
+        "test:type-coverage": "pest --type-coverage --min=100  --memory-limit=-1",
+        "test:unit": "pest --colors=always",
+        "test": [
+            "@test:lint",
+            "@test:types",
+            "@test:type-coverage",
+            "@test:unit"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "ClarkeWing\\LegacySync\\LegacySyncServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
