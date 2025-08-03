@@ -15,7 +15,10 @@ class SyncLegacyData extends Command
 
     public function handle(): void
     {
-        $direction = match ($directionArg = $this->argument('direction')) {
+        /** @var string $directionArg */
+        $directionArg = $this->argument('direction');
+
+        $direction = match ($directionArg) {
             'legacy_to_new' => SyncDirection::LegacyToNew,
             'new_to_legacy' => SyncDirection::NewToLegacy,
             default => throw new \InvalidArgumentException("Invalid direction: '$directionArg'"),
@@ -23,7 +26,7 @@ class SyncLegacyData extends Command
 
         $this->info("Starting sync: $direction->name");
 
-        if ($table = $this->option('table')) {
+        if ($table = $this->option('table')) { /** @var string $table */
             app(LegacySyncManager::class)->syncTable($table, $direction);
         } else {
             app(LegacySyncManager::class)->syncAll($direction);

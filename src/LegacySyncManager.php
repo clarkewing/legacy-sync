@@ -19,8 +19,21 @@ class LegacySyncManager
         resolve(SyncTable::class)->handle($table, $direction);
     }
 
+    /**
+     * @return string[]
+     */
     protected function getSyncableTables(): array
     {
-        return array_keys(config('legacy_sync.mapping', []));
+        /**
+         * @var array<string, array{
+         *     primary_key: string,
+         *     map?: array<string, string>,
+         *     defaults?: array<string, mixed>,
+         *     exclude?: array<string, string[]>
+         * }> $mappingConfig
+         */
+        $mappingConfig = config('legacy_sync.mapping', []);
+
+        return array_keys($mappingConfig);
     }
 }

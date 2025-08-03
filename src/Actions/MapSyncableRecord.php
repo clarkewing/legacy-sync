@@ -4,24 +4,44 @@ namespace ClarkeWing\LegacySync\Actions;
 
 use ClarkeWing\LegacySync\Enums\SyncDirection;
 
-class MapSyncableRecord
+final class MapSyncableRecord
 {
+    /**
+     * @param  array<string, mixed>  $record
+     * @return array<string, mixed>
+     */
     public static function fromLegacy(array $record, string $table): array
     {
-        return (new static)->handle($record, $table, SyncDirection::LegacyToNew);
+        return (new self)->handle($record, $table, SyncDirection::LegacyToNew);
     }
 
+    /**
+     * @param  array<string, mixed>  $record
+     * @return array<string, mixed>
+     */
     public static function toLegacy(array $record, string $table): array
     {
-        return (new static)->handle($record, $table, SyncDirection::NewToLegacy);
+        return (new self)->handle($record, $table, SyncDirection::NewToLegacy);
     }
 
+    /**
+     * @param  array<string, mixed>  $record
+     * @return array<string, mixed>
+     */
     public function handle(array $record, string $table, SyncDirection $direction): array
     {
-        $config = config("legacy_sync.mapping.{$table}", []);
-        $rawMap = $config['map'] ?? [];
-        $defaults = $config['defaults'] ?? [];
-        $exclude = $config['exclude'][$direction->targetKey()] ?? [];
+        /**
+         * @var array{
+         *     primary_key: string,
+         *     map?: array<string, string>,
+         *     defaults?: array<string, mixed>,
+         *     exclude?: array<string, string[]>
+         * } $tableConfig
+         */
+        $tableConfig = config("legacy_sync.mapping.{$table}", []);
+        $rawMap = $tableConfig['map'] ?? [];
+        $defaults = $tableConfig['defaults'] ?? [];
+        $exclude = $tableConfig['exclude'][$direction->targetKey()] ?? [];
 
         $map = match ($direction) {
             SyncDirection::LegacyToNew => $rawMap,
