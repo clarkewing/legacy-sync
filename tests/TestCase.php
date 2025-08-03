@@ -27,8 +27,6 @@ abstract class TestCase extends Orchestra
     {
         Model::preventLazyLoading();
 
-        $app['config']->set('app.key', 'base64:XKIF+krFyL/DetvgSFCnmAOUn99navUB2AeeMbDIbcM=');
-
         $app['config']->set('database.connections.legacy', [
             'driver' => 'sqlite',
             'database' => ':memory:',
@@ -40,6 +38,19 @@ abstract class TestCase extends Orchestra
             'driver' => 'sqlite',
             'database' => ':memory:',
             'prefix' => '',
+        ]);
+
+        $app['config']->set('legacy_sync.connections', [
+            'legacy' => 'legacy',
+            'new' => 'sqlite',
+        ]);
+        $app['config']->set('legacy_sync.mapping', [
+            'users' => [
+                'primary_key' => 'id',
+                'map' => [
+                    'birthdate' => 'birth_date',
+                ],
+            ],
         ]);
     }
 

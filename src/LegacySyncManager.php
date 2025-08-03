@@ -16,7 +16,7 @@ class LegacySyncManager
 
     public function syncTable(string $table, SyncDirection $direction): void
     {
-        (new SyncTable)->handle($table, $direction);
+        resolve(SyncTable::class)->handle($table, $direction);
     }
 
     protected function getSyncableTables(): array
