@@ -16,7 +16,7 @@ class SyncTable
         $this->setUp($table, $direction);
 
         $this->getSourceRecords()
-            ->each(fn (array|object $record, int|string $key): null => $this->syncRecord($record));
+            ->each(fn (array|object $record, int|string $key) => $this->syncRecord($record));
     }
 
     /**
