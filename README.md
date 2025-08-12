@@ -130,20 +130,20 @@ return [
 Legacy Sync provides a simple API for syncing tables between your legacy and modern applications:
 
 ```php
-use ClarkeWing\LegacySync\LegacySyncManager;
+use ClarkeWing\LegacySync\Facades\LegacySync;
 use ClarkeWing\LegacySync\Enums\SyncDirection;
 
 // Sync a specific table from legacy to new
-app(LegacySyncManager::class)->syncTable('users', SyncDirection::LegacyToNew);
+LegacySync::syncTable('users', SyncDirection::LegacyToNew);
 
 // Sync a specific table from new to legacy
-app(LegacySyncManager::class)->syncTable('users', SyncDirection::NewToLegacy);
+LegacySync::syncTable('users', SyncDirection::NewToLegacy);
 
 // Sync all configured tables from legacy to new
-app(LegacySyncManager::class)->syncAll(SyncDirection::LegacyToNew);
+LegacySync::syncAll(SyncDirection::LegacyToNew);
 
 // Sync all configured tables from new to legacy
-app(LegacySyncManager::class)->syncAll(SyncDirection::NewToLegacy);
+LegacySync::syncAll(SyncDirection::NewToLegacy);
 ```
 
 ### Syncing Individual Records
@@ -151,14 +151,14 @@ app(LegacySyncManager::class)->syncAll(SyncDirection::NewToLegacy);
 For more granular control, you can sync individual records by their primary key:
 
 ```php
-use ClarkeWing\LegacySync\Actions\SyncRecord;
+use ClarkeWing\LegacySync\Facades\LegacySync;
 use ClarkeWing\LegacySync\Enums\SyncDirection;
 
 // Sync a specific user with ID 123 from legacy to new
-app(SyncRecord::class)->handle('users', 123, SyncDirection::LegacyToNew);
+LegacySync::syncRecord('users', 123, SyncDirection::LegacyToNew);
 
 // Sync a specific user with ID 456 from new to legacy
-app(SyncRecord::class)->handle('users', 456, SyncDirection::NewToLegacy);
+LegacySync::syncRecord('users', 456, SyncDirection::NewToLegacy);
 ```
 
 ### Artisan Commands
@@ -227,6 +227,48 @@ To exclude specific columns from syncing:
     ],
 ],
 ```
+
+---
+
+## 🧪 Testing
+
+You can safely prevent real database syncing during tests by faking the facade. When faked, all sync methods become no-ops and no database writes will occur.
+
+- `LegacySync::fake()` swaps the facade to a fake implementation.
+- `LegacySync::isFake()` lets you detect if the facade is currently faked.
+
+Example (Pest):
+
+```php
+use ClarkeWing\LegacySync\Enums\SyncDirection;
+use ClarkeWing\LegacySync\Facades\LegacySync;
+
+it('does not perform real syncing when faked', function () {
+    // Prevent any actual syncing work
+    LegacySync::fake();
+
+    expect(LegacySync::isFake())->toBeTrue();
+
+    // These calls are intercepted and do nothing
+    LegacySync::syncAll(SyncDirection::LegacyToNew);
+    LegacySync::syncTable('users', SyncDirection::NewToLegacy);
+    LegacySync::syncRecord('users', 123, SyncDirection::LegacyToNew);
+});
+```
+
+You can also fake before invoking your own application code or Artisan commands that trigger syncing:
+
+```php
+use ClarkeWing\LegacySync\Facades\LegacySync;
+
+LegacySync::fake();
+
+// For example, a feature test that triggers a sync via a command
+$this->artisan('legacy:sync legacy_to_new')
+    ->assertSuccessful();
+```
+
+Note: The provided fake is intentionally a safe no-op and does not record calls for assertions. If you need to assert specific interactions, mock your own collaborators or assert application-side effects instead of database changes.
 
 ---
 
