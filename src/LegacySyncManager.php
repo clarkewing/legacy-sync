@@ -2,6 +2,7 @@
 
 namespace ClarkeWing\LegacySync;
 
+use ClarkeWing\LegacySync\Actions\SyncRecord;
 use ClarkeWing\LegacySync\Actions\SyncTable;
 use ClarkeWing\LegacySync\Enums\SyncDirection;
 
@@ -17,6 +18,11 @@ class LegacySyncManager
     public function syncTable(string $table, SyncDirection $direction): void
     {
         resolve(SyncTable::class)->handle($table, $direction);
+    }
+
+    public function syncRecord(string $table, int|string $recordKey, SyncDirection $direction): void
+    {
+        resolve(SyncRecord::class)->handle($table, $recordKey, $direction);
     }
 
     /**

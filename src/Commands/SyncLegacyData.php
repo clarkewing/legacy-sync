@@ -3,7 +3,7 @@
 namespace ClarkeWing\LegacySync\Commands;
 
 use ClarkeWing\LegacySync\Enums\SyncDirection;
-use ClarkeWing\LegacySync\LegacySyncManager;
+use ClarkeWing\LegacySync\Facades\LegacySync;
 use Illuminate\Console\Command;
 
 class SyncLegacyData extends Command
@@ -27,9 +27,9 @@ class SyncLegacyData extends Command
         $this->info("Starting sync: $direction->name");
 
         if ($table = $this->option('table')) { /** @var string $table */
-            app(LegacySyncManager::class)->syncTable($table, $direction);
+            LegacySync::syncTable($table, $direction);
         } else {
-            app(LegacySyncManager::class)->syncAll($direction);
+            LegacySync::syncAll($direction);
         }
 
         $this->info('Sync complete.');
