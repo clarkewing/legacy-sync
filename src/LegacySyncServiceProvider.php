@@ -10,6 +10,8 @@ class LegacySyncServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->registerPackageConfig();
+
+        $this->registerBindings();
     }
 
     public function boot(): void
@@ -24,6 +26,11 @@ class LegacySyncServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/../config/legacy_sync.php', 'legacy_sync'
         );
+    }
+
+    protected function registerBindings(): void
+    {
+        $this->app->singleton(LegacySyncManager::class, fn () => new LegacySyncManager);
     }
 
     protected function publishPackageConfig(): void
