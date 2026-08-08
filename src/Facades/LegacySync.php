@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static \ClarkeWing\LegacySync\LegacySyncManager syncTable(string $table, SyncDirection $direction)
  * @method static \ClarkeWing\LegacySync\LegacySyncManager syncRecord(string $table, int|string $recordKey, SyncDirection $direction)
  *
- * @see \ClarkeWing\LegacySync\LegacySyncManager
+ * @see LegacySyncManager
  */
 class LegacySync extends Facade
 {
