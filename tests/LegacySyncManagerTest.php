@@ -1,5 +1,6 @@
 <?php
 
+use ClarkeWing\LegacySync\Actions\DeleteRecord;
 use ClarkeWing\LegacySync\Actions\SyncTable;
 use ClarkeWing\LegacySync\Enums\SyncDirection;
 use ClarkeWing\LegacySync\LegacySyncManager;
@@ -100,4 +101,15 @@ test('syncTable handles both sync directions correctly', function () {
     });
 
     (new LegacySyncManager)->syncTable('users', SyncDirection::NewToLegacy);
+});
+
+test('deleteRecord calls DeleteRecord action with correct parameters', function () {
+    $this->mock(DeleteRecord::class, function (MockInterface $mock) {
+        $mock->shouldReceive('handle')
+            ->once()
+            ->with('users', 123, SyncDirection::NewToLegacy)
+            ->andReturn(null);
+    });
+
+    (new LegacySyncManager)->deleteRecord('users', 123, SyncDirection::NewToLegacy);
 });

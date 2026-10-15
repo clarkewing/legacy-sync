@@ -21,4 +21,9 @@ class LegacySyncFake extends LegacySyncManager
     {
         //
     }
+
+    public function deleteRecord(string $table, int|string $recordKey, SyncDirection $direction): void
+    {
+        //
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace ClarkeWing\LegacySync;
 
+use ClarkeWing\LegacySync\Actions\DeleteRecord;
 use ClarkeWing\LegacySync\Actions\SyncRecord;
 use ClarkeWing\LegacySync\Actions\SyncTable;
 use ClarkeWing\LegacySync\Enums\SyncDirection;
@@ -23,6 +24,11 @@ class LegacySyncManager
     public function syncRecord(string $table, int|string $recordKey, SyncDirection $direction): void
     {
         resolve(SyncRecord::class)->handle($table, $recordKey, $direction);
+    }
+
+    public function deleteRecord(string $table, int|string $recordKey, SyncDirection $direction): void
+    {
+        resolve(DeleteRecord::class)->handle($table, $recordKey, $direction);
     }
 
     /**

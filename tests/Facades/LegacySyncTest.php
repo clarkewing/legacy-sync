@@ -1,5 +1,6 @@
 <?php
 
+use ClarkeWing\LegacySync\Actions\DeleteRecord;
 use ClarkeWing\LegacySync\Actions\SyncRecord;
 use ClarkeWing\LegacySync\Actions\SyncTable;
 use ClarkeWing\LegacySync\Enums\SyncDirection;
@@ -33,14 +34,28 @@ it('resolves to the LegacySyncManager by default and delegates calls', function 
 
     // Call via facade
     LegacySync::syncRecord('users', 1, SyncDirection::LegacyToNew);
+
+    // Mock the DeleteRecord action and ensure it gets called via the facade
+    $this->mock(DeleteRecord::class, function (MockInterface $mock) {
+        $mock->shouldReceive('handle')
+            ->once()
+            ->with('users', 1, SyncDirection::NewToLegacy)
+            ->andReturnNull();
+    });
+
+    // Call via facade
+    LegacySync::deleteRecord('users', 1, SyncDirection::NewToLegacy);
 });
 
 it('can be faked via LegacySync::fake() which prevents real syncing', function () {
-    // When faked, the SyncTable and SyncRecord actions should never be invoked
+    // When faked, the SyncTable, SyncRecord and DeleteRecord actions should never be invoked
     $this->mock(SyncTable::class, function (MockInterface $mock) {
         $mock->shouldReceive('handle')->never();
     });
     $this->mock(SyncRecord::class, function (MockInterface $mock) {
+        $mock->shouldReceive('handle')->never();
+    });
+    $this->mock(DeleteRecord::class, function (MockInterface $mock) {
         $mock->shouldReceive('handle')->never();
     });
 
@@ -51,6 +66,7 @@ it('can be faked via LegacySync::fake() which prevents real syncing', function (
 
     // Calls should be intercepted by the fake and do nothing
     LegacySync::syncRecord('users', 1, SyncDirection::NewToLegacy);
+    LegacySync::deleteRecord('users', 1, SyncDirection::NewToLegacy);
     LegacySync::syncTable('users', SyncDirection::NewToLegacy);
     LegacySync::syncAll(SyncDirection::LegacyToNew);
 });
