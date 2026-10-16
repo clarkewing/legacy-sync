@@ -161,6 +161,17 @@ LegacySync::syncRecord('users', 123, SyncDirection::LegacyToNew);
 LegacySync::syncRecord('users', 456, SyncDirection::NewToLegacy);
 ```
 
+### Deleting Individual Records
+
+Syncing only ever inserts and updates. When a record is deleted on one side, delete it from the other by its primary key, for example from a model observer's `deleted` event:
+
+```php
+// Delete user 456 from legacy, after it was deleted from new
+LegacySync::deleteRecord('users', 456, SyncDirection::NewToLegacy);
+```
+
+A record already missing from the target is left alone.
+
 ### Artisan Commands
 
 Legacy Sync also provides an Artisan command for syncing tables:
@@ -253,6 +264,7 @@ it('does not perform real syncing when faked', function () {
     LegacySync::syncAll(SyncDirection::LegacyToNew);
     LegacySync::syncTable('users', SyncDirection::NewToLegacy);
     LegacySync::syncRecord('users', 123, SyncDirection::LegacyToNew);
+    LegacySync::deleteRecord('users', 123, SyncDirection::NewToLegacy);
 });
 ```
 

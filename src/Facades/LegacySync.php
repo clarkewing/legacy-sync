@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static \ClarkeWing\LegacySync\LegacySyncManager syncAll(SyncDirection $direction)
  * @method static \ClarkeWing\LegacySync\LegacySyncManager syncTable(string $table, SyncDirection $direction)
  * @method static \ClarkeWing\LegacySync\LegacySyncManager syncRecord(string $table, int|string $recordKey, SyncDirection $direction)
+ * @method static \ClarkeWing\LegacySync\LegacySyncManager deleteRecord(string $table, int|string $recordKey, SyncDirection $direction)
  *
  * @see LegacySyncManager
  */
